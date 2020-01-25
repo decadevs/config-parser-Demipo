@@ -1,23 +1,17 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class ConfigParser {
 
-    //private fields
-    Map<Object, Object> mainHashMap = new HashMap<Object, Object>(); //object preferred because value type inconsistency
-    Map<String, String> innerHashMap1 = new HashMap<String, String>();
-    Map<String, String> innerHashMap2 = new HashMap<String, String>();
-    Map[] map = {innerHashMap1, innerHashMap2}; //prevent over-writing of map
-    ArrayList application = new ArrayList();
+    Map<String, String> config = new HashMap<String, String>();
     String[] arr = new String[2]; //holds key and value per time
     String fileName = "";
-    int itr = 0; //array index iterator
-    int appCounter = 0; //takes care of [APPLICATION]
-
+    int itr = 0;
+    int carriageCounter = 0;
+    int applicationCounter = 0;
 
     public ConfigParser(String fileName){
         this.fileName = fileName;
@@ -28,28 +22,35 @@ public class ConfigParser {
         try{
             reader = new BufferedReader(new FileReader(fileName));
             String line = reader.readLine();
+
             while(line != null){
-
-                if (line.startsWith("[")){
-                    map[appCounter].remove(" ");
-                    application.add(map[appCounter]);
-                    appCounter++;
+                if(line.equals("")){
+                    carriageCounter++;
                 }
-
-                else if((!(line.startsWith("["))  && appCounter == 0)){
+               else if(line.equals("[application]")){
+                    applicationCounter++;
+                }
+                else if(carriageCounter%2 == 0){
                     for (String word : line.split("=", 0)) {
                         arr[itr] = word;
                         itr++;
                     }
-                    mainHashMap.put(arr[0], arr[1]);
+                    config.put(arr[0], arr[1]);
                     itr = 0;
                 }
-                else if(!(line.startsWith("[")  && appCounter > 0)){
+                else if(carriageCounter%2 == 1){
                     for (String word : line.split("=", 0)) {
                         arr[itr] = word;
                         itr++;
                     }
-                    map[appCounter - 1].put(arr[0], arr[1]);
+                    String s = "";
+                    if(applicationCounter == 1){
+                        s = "application."+arr[0];
+                    }
+                    else{
+                        s = "application"+applicationCounter+"."+arr[0];
+                    }
+                    config.put(s, arr[1]);
                     itr = 0;
                 }
                 line = reader.readLine();
@@ -58,34 +59,37 @@ public class ConfigParser {
         }catch(Exception e){
             System.err.println("Exception: " + e.getMessage());
         }
-        mainHashMap.remove("");
-        innerHashMap1.remove("");
-        mainHashMap.put("application", application);
-
+        System.out.println(config);
     }
-
+    public void getMap(){
+        System.out.println(config);
+    }
     public void getDbName(){
-        System.out.println("DBName......>"+mainHashMap.get("dbname").toString());
+        System.out.println("dbname="+ config.get("dbname"));
     }
     public void getHost(){
-        System.out.println("Host......>"+mainHashMap.get("host").toString());
+        System.out.println("host="+ config.get("host"));
     }
     public void getName(){
-        System.out.println("Name......>"+ innerHashMap1.get("name"));
+        System.out.println("name="+ config.get("application.name"));
     }
     public void getPort(){
-        System.out.println("Port......>"+ innerHashMap1.get("port"));
+        System.out.println("port="+ config.get("application.port"));
     }
     public void getContextUrl(){
-        System.out.println("Context-URL......>"+ innerHashMap1.get("context-url"));
+        System.out.println("context-url="+ config.get("application.context-url"));
     }
     public void getMode(){
-        System.out.println("Mode......>"+ innerHashMap1.get("mode"));
+        System.out.println("mode="+ config.get("mode"));
     }
     public void getTheme(){
-        System.out.println("Theme......>"+ innerHashMap1.get("theme"));
+        System.out.println("theme="+ config.get("theme"));
     }
-    public void getPipeLine(){
-        System.out.println("Pipeline......>"+ innerHashMap1.get("pipeline"));
+    public void getPipeline(){
+        System.out.println("pipeline="+ config.get("pipeline"));
     }
+    public void getNameTwo(){
+        System.out.println("name="+ config.get("application2.name"));
+    }
+
 }
