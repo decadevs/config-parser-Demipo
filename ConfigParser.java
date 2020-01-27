@@ -59,37 +59,13 @@ public class ConfigParser {
         }catch(Exception e){
             System.err.println("Exception: " + e.getMessage());
         }
-        System.out.println(config);
+        //System.out.println(config);
     }
     public void getMap(){
         System.out.println(config);
     }
-    public void getDbName(){
-        System.out.println("dbname="+ config.get("dbname"));
-    }
-    public void getHost(){
-        System.out.println("host="+ config.get("host"));
-    }
-    public void getName(){
-        System.out.println("name="+ config.get("application.name"));
-    }
-    public void getPort(){
-        System.out.println("port="+ config.get("application.port"));
-    }
-    public void getContextUrl(){
-        System.out.println("context-url="+ config.get("application.context-url"));
-    }
-    public void getMode(){
-        System.out.println("mode="+ config.get("mode"));
-    }
-    public void getTheme(){
-        System.out.println("theme="+ config.get("theme"));
-    }
-    public void getPipeline(){
-        System.out.println("pipeline="+ config.get("pipeline"));
-    }
-    public void getNameTwo(){
-        System.out.println("name="+ config.get("application2.name"));
+    public String getValue(String s){
+        return (config.get(s));
     }
 
 }
